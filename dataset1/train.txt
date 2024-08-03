@@ -1,0 +1,7 @@
+I am very angry;Angry
+This is disgusting;Disgust
+I am so scared;Fear
+I am very happy;Happy
+I feel neutral;Neutral
+I am so sad;Sad
+What a surprise!;Surprise

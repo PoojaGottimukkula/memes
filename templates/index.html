@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        input[type="file"], input[type="text"] { width: 100%; padding: 10px; margin-bottom: 20px; }
+        button { padding: 10px 20px; font-size: 16px; }
+        img { max-width: 100%; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meme Generator</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Upload and Generate Meme</button>
+        </form>
+        <hr>
+        <form action="/generate" method="post">
+            <input type="text" name="text" placeholder="Enter your text here" required>
+            <button type="submit">Generate Meme from Text</button>
+        </form>
+        <hr>
+        <div id="meme">
+            <!-- Meme will be displayed here -->
+        </div>
+    </div>
+</body>
+</html>
