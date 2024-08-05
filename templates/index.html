@@ -10,24 +10,31 @@
         input[type="file"], input[type="text"] { width: 100%; padding: 10px; margin-bottom: 20px; }
         button { padding: 10px 20px; font-size: 16px; }
         img { max-width: 100%; margin-top: 20px; }
+        .error { color: red; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Meme Generator</h1>
+        <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="error">
+              {% for category, message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %} -->
         <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" accept="image/*" required>
-            <button type="submit">Upload and Generate Meme</button>
+            <h2>Upload an Image</h2>
+            <input type="file" name="file" accept="image/*">
+            <button type="submit">Upload Image</button>
         </form>
-        <hr>
         <form action="/generate" method="post">
-            <input type="text" name="text" placeholder="Enter your text here" required>
-            <button type="submit">Generate Meme from Text</button>
+            <h2>Generate Meme from Text</h2>
+            <input type="text" name="text" placeholder="Enter text here">
+            <button type="submit">Generate Meme</button>
         </form>
-        <hr>
-        <div id="meme">
-            <!-- Meme will be displayed here -->
-        </div>
     </div>
 </body>
 </html>
