@@ -13,8 +13,7 @@ MemeForge is a Flask-based web application that combines advanced emotion detect
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/yourusername/MemeForge.git
-    cd MemeForge
+    git clone https://github.com/yourusername/memes.git
     ```
 
 2. **Set up a virtual environment**:
@@ -29,9 +28,9 @@ MemeForge is a Flask-based web application that combines advanced emotion detect
     ```
 
 4. **Place the pre-trained emotion detection model**:
-    - Download the `emotiondetector.h5` model file and place it in the root directory of the project.
+    - Ensure the `emotiondetector.h5` and `emotiondetector.json` files are in the root directory of the project.
 
-5. **Create necessary folders**:
+5. **Create necessary folders** (if not already present):
     ```sh
     mkdir uploads static
     ```
@@ -71,24 +70,36 @@ Make sure to set the correct configurations for the Flask application:
 ## File Structure
 
 ```plaintext
-MemeForge/
+MINIPROJECT/
 │
-├── app.py                      # Main Flask application
-├── emotiondetector.h5          # Pre-trained emotion detection model
-├── requirements.txt            # Python dependencies
-├── templates/
+├── __pycache__/                # Python cache files
+├── dataset1/                   # Dataset 1 for emotion detection training
+│   ├── test/
+│   ├── train/
+│   └── train.txt
+├── dataset2/                   # Dataset 2 for additional training/testing
+│   ├── images/images
+│   └── labels.csv
+├── static/                     # Directory for static files and generated memes
+├── templates/                  # HTML templates for the web interface
 │   ├── index.html              # Main page for image upload and text input
 │   └── meme.html               # Page to display the generated meme
 ├── uploads/                    # Directory for uploaded images
-├── static/                     # Directory for static files and generated memes
+├── app.py                      # Main Flask application
+├── emotiondetector.h5          # Pre-trained emotion detection model
+├── emotiondetector.json        # Model configuration file
+├── try.ipynb                   # Jupyter Notebook for experimentation and testing
+├── requirements.txt            # Python dependencies
+└── README.md                   # This README file
 ```
 
 ## Contributing
 
 Contributions are welcome! Please create an issue or submit a pull request for any features, bug fixes, or enhancements.
 
+
 ## Acknowledgments
 
-- [Imgflip](https://api.imgflip.com/caption_image) for the meme generation API.
+- [Imgflip](https://imgflip.com/) for the meme generation API.
 - OpenCV for image processing.
 - TensorFlow and Keras for the emotion detection model.
