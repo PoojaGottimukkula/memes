@@ -5,36 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meme Generator</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        input[type="file"], input[type="text"] { width: 100%; padding: 10px; margin-bottom: 20px; }
-        button { padding: 10px 20px; font-size: 16px; }
-        img { max-width: 100%; margin-top: 20px; }
-        .error { color: red; }
+        html{
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: url('https://imgs.search.brave.com/RYUuToCZDYvxqwJnYWeXtO4xjFLt8sBGej-cmmSohyM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDMyOTgx/NjIuanBn');
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .form-wrapper {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgb(255, 255, 255);
+            color: black;
+            max-width: 45%;
+        }
+        input[type="file"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Meme Generator</h1>
-        <!-- {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <ul class="error">
-              {% for category, message in messages %}
-                <li>{{ message }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
-        {% endwith %} -->
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <h2>Upload an Image</h2>
-            <input type="file" name="file" accept="image/*">
-            <button type="submit">Upload Image</button>
-        </form>
-        <form action="/generate" method="post">
-            <h2>Generate Meme from Text</h2>
-            <input type="text" name="text" placeholder="Enter text here">
-            <button type="submit">Generate Meme</button>
-        </form>
+        <h1>Meme Forge</h1>
+        <div class="form-container">
+            <div class="form-wrapper">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <h2>Upload an Image</h2>
+                    <input type="file" name="file" accept="image/*">
+                    <button type="submit">Upload Image</button>
+                </form>
+            </div>
+            <div class="form-wrapper">
+                <form action="/generate" method="post">
+                    <h2>Generate Meme from Text</h2>
+                    <input type="text" name="text" placeholder="Enter text here">
+                    <button type="submit">Generate Meme</button>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 </html>

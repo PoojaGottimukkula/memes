@@ -45,10 +45,7 @@ for line in lines:
     else:
         emotions_dialogues[emotion] = [dialogue]
 
-# Google Custom Search API credentials
-GOOGLE_API_KEY = 'YOUR_GOOGLE_API_KEY'
-SEARCH_ENGINE_ID = 'YOUR_SEARCH_ENGINE_ID'
-
+print(emotions_dialogues)
 # Function to preprocess the image for emotion detection
 def preprocess_image(image_path):
     image = cv2.imread(image_path)
@@ -66,7 +63,6 @@ def predict_emotion(image_array):
 
 # Function to generate dialogue based on emotion
 def generate_dialogue(expression):
-    expression = expression.lower()
     if expression in emotions_dialogues:
         return random.choice(emotions_dialogues[expression])
     else:
@@ -75,30 +71,22 @@ def generate_dialogue(expression):
 # Function to detect emotion from text using a simple heuristic (or a model)
 def detect_text_emotion(text):
     text = text.lower()
-    if 'happy' in text or 'joy' in text:
-        return 'Happy'
-    elif 'sad' in text or 'cry' in text:
-        return 'Sadness'
-    elif 'angry' in text or 'mad' in text:
-        return 'Angry'
-    elif 'fear' in text or 'scared' in text:
-        return 'Fear'
-    elif 'disgust' in text or 'gross' in text:
-        return 'Disgust'
-    elif 'surprise' in text or 'shock' in text:
-        return 'Surprise'
-    else:
-        return 'Neutral'
 
-# Function to fetch image from Google based on the emotion
-def fetch_image_from_google(emotion):
-    search_url = f"https://www.googleapis.com/customsearch/v1?q={emotion}&cx={SEARCH_ENGINE_ID}&key={GOOGLE_API_KEY}&searchType=image"
-    response = requests.get(search_url)
-    data = response.json()
-    if 'items' in data:
-        image_url = random.choice(data['items'])['link']
-        return image_url
-    return None
+    emotion_keywords = {
+        'happy': {'happy', 'joy', 'glad', 'pleased', 'content', 'delighted'},
+        'sad': {'sad', 'cry', 'upset', 'down', 'depressed', 'unhappy'},
+        'angry': {'angry', 'mad', 'furious', 'irate', 'annoyed', 'outraged'},
+        'fear': {'fear', 'scared', 'afraid', 'terrified', 'frightened', 'anxious'},
+        'disgust': {'disgust', 'gross', 'revolted', 'nauseated', 'repulsed'},
+        'surprise': {'surprise', 'shock', 'astonished', 'amazed', 'startled'},
+        'neutral': {'neutral', 'okay', 'fine', 'alright', 'meh'}
+    }
+
+    for emotion, keywords in emotion_keywords.items():
+        if any(word in text for word in keywords):
+            return emotion.capitalize()
+
+    return 'Neutral'
 
 # Function to wrap text into multiple lines
 def wrap_text(text, font, font_scale, font_thickness, max_width):
@@ -139,7 +127,11 @@ def overlay_text(image_path, text):
     cv2.imwrite(output_path, image)
     return output_path
 
-@app.route('/')
+@app.route('/templates/main.html')
+def main():
+    return render_template('main.html')
+
+@app.route('/templates/index.html')
 def index():
     return render_template('index.html')
 
@@ -176,6 +168,35 @@ def upload_file():
             flash('Failed to process image')
             return redirect(url_for('index'))
 
+# Function to create meme using Imgflip API
+import requests
+
+def create_meme_imgflip(template_id, top_text):
+    payload = {
+        'template_id': template_id,
+        'username': 'pooja_G',  # Replace with your actual Imgflip username
+        'password': 'pooja15d',  # Replace with your actual Imgflip password
+        'text0': top_text,
+    }
+    response = requests.post('https://api.imgflip.com/caption_image', data=payload)
+    if response.status_code == 200 and response.json().get('success'):
+        return response.json()['data']['url']
+    else:
+        error_message = response.json().get('error_message', 'Unknown error')
+        print('Error:', error_message)
+        return None
+
+# Map emotions to Imgflip meme template IDs
+emotion_to_template = {
+    'Angry': '259680',
+    'Disgust': '175540452',
+    'Fear': '226297822',
+    'Happy': '12403754',
+    'Sad': '61539',
+    'Surprise': '155067746',
+    'Neutral': '8072285'
+}
+
 @app.route('/generate', methods=['POST'])
 def generate_meme():
     text = request.form.get('text')
@@ -185,31 +206,29 @@ def generate_meme():
         return redirect(url_for('index'))
     try:
         emotion = detect_text_emotion(text)
-        image_url = fetch_image_from_google(emotion)
-        if image_url:
-            response = requests.get(image_url)
-            image_path = os.path.join(app.config['STATIC_FOLDER'], 'text_image.jpg')
-            with open(image_path, 'wb') as f:
-                f.write(response.content)
-            meme_path = overlay_text(image_path, text)
-            return send_file(meme_path, mimetype='image/jpeg')
+        # Get the template ID based on the emotion
+        template_id = emotion_to_template.get(emotion, '21604248')  # Default to blank template if not found
+        meme_url = create_meme_imgflip(template_id, text)
+        if meme_url:
+            return render_template('meme.html', meme_url=meme_url)
         else:
-            app.logger.error('Failed to fetch image from Google')
-            flash('Failed to fetch image from Google')
+            flash('Failed to generate meme using Imgflip API')
             return redirect(url_for('index'))
     except Exception as e:
         app.logger.error(f'Failed to generate meme: {e}')
         flash('Failed to generate meme')
         return redirect(url_for('index'))
 
-@app.route('/meme')
+
+@app.route('/templates/meme.html')
 def display_meme():
-    meme_path = request.args.get('meme_path')
-    return render_template('meme.html', meme_path=meme_path)
+    meme_url = request.args.get('meme_url')
+    return render_template('meme.html', meme_url=meme_url)
+
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
     if not os.path.exists(STATIC_FOLDER):
         os.makedirs(STATIC_FOLDER)
-    app.run(debug=True)
+    app.run(debug=True,port=5501)
